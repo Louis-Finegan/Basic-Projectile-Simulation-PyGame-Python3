@@ -4,6 +4,7 @@ import pygame
 from math import *
 import time
 import os
+import sys
 
 # RGB COLORS values are stored in a dictionary with their corrisponding name
 COLORS = {
@@ -274,6 +275,7 @@ def main():
                 main()
     # Quit Pygame
     pygame.quit()
+    sys.exit()
 
 if __name__ == '__main__':
     main()
