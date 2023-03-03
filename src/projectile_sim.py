@@ -24,7 +24,7 @@ class ball:
         self.start_vel = start_vel
         self.angle = angle
         self.dt = 0.01
-        self.BALL_ICON = pygame.image.load(os.path.join('icons', 'icons8-ball-64.png'))
+        self.BALL_ICON = pygame.image.load(os.path.join('icons', 'icons8-ball-64.png')) # Ball icon see README for reference
         self.BALL = pygame.transform.scale(self.BALL_ICON, (32, 32))
 
     # Sets initial velocity
@@ -81,6 +81,41 @@ class input_rect:
     def height_rect(self):
         return self.draw_rect().height
 
+# Labels indicating what parameters need to be filled into 
+# the input boxs.
+class input_rect_label:
+    def __init__(self, locs, txt_label):
+        self.locs = locs
+        self.txt = txt_label
+        self.font = pygame.font.Font(os.path.join('fonts', 'arial.ttf'), 24)
+        self.txt_surf = self.font.render(self.txt, True, COLORS['BLACK'])
+        self.surface = pygame.surface.Surface((self.locs[0], self.locs[1]))
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.txt_surf, (self.locs[0], self.locs[1]))
+
+# Label of the balls, updating position
+# in both x and y in the top right hand side of the display.
+class label:
+    def __init__(self, locs, txt):
+        self.locs = locs
+        self.txt = txt
+        self.font = pygame.font.Font(os.path.join('fonts', 'arial.ttf'), 16)
+        self.txt_surf = self.font.render(self.txt, True, COLORS['BLACK'])
+        self.surface = pygame.surface.Surface((self.locs[0], self.locs[1]))
+
+
+    def draw(self, SCREEN):
+        SCREEN.blit(self.txt_surf, (self.locs[0], self.locs[1]))
+
+    def update(self):
+        self.surface.fill(COLORS['WHITE'])
+        self.txt_surf = self.font.render(self.txt, True, COLORS['BLACK'])
+        self.surface.blit(self.txt_surf, (self.locs[0], self.locs[1]))
+        pygame.display.flip()
+
+        
+
 def main():
     # Initialize Pygame
     pygame.init()
@@ -88,20 +123,34 @@ def main():
     SCREEN = pygame.display.set_mode(SIZE)
     SCREEN.fill(COLORS['WHITE'])
     pygame.display.flip()
-    ICON = pygame.image.load(os.path.join('icons', 'icons8-catapult-50.png')) # icon in the GUI
+    ICON = pygame.image.load(os.path.join('icons', 'icons8-catapult-50.png')) # icon in the GUI see README for reference
     pygame.display.set_icon(ICON)                                             # Sets the image
     clock = pygame.time.Clock()
 
     GRAVITATIONAL_ACCELERATION = 980
 
     # Creates the input boxes
-    boxes = [input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 - 40], COLORS['GREY'], COLORS['LIGHT_GREY']),
-        input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 + 0], COLORS['GREY'], COLORS['LIGHT_GREY']),
-        input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 + 40], COLORS['GREY'], COLORS['LIGHT_GREY'])]
+    boxes = [
+        input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 - 60], COLORS['GREY'], COLORS['LIGHT_GREY']),
+        input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 - 20], COLORS['GREY'], COLORS['LIGHT_GREY']),
+        input_rect([SIZE[0]/2 - 128/2, SIZE[1]/2 + 20], COLORS['GREY'], COLORS['LIGHT_GREY'])
+    ]
     
     color = [boxes[i].color_passive for i, _ in enumerate(boxes)]
 
     input_box = [boxes[i].draw_rect() for i, _ in enumerate(boxes)]
+
+    input_box_label = [
+        input_rect_label([SIZE[0]/2 - 239, SIZE[1]/2 - 60], 'Initial x velocity'),
+        input_rect_label([SIZE[0]/2 - 239, SIZE[1]/2 - 20], 'Initial y velocity'),
+        input_rect_label([SIZE[0]/2 - 239, SIZE[1]/2 + 20], 'Launching Angle')
+    ]
+
+    input_box_label[0].draw(SCREEN)
+    input_box_label[1].draw(SCREEN)
+    input_box_label[2].draw(SCREEN)
+
+    text_box = label([SIZE[0] - 250, 10], '')
 
     # Initial States the simulation is set
     running = True
@@ -228,7 +277,7 @@ def main():
                     main()
 
         # If enter key is pressed simulation will begin
-        if pressed_return:  
+        if pressed_return: 
 
             try:
                 # Update the position of the projectile
@@ -266,6 +315,10 @@ def main():
                 # Draw the projectile
                 obj.draw_ball(SCREEN, (pos_x, pos_y))
                 
+                text_box.txt = f'x location: {pos_x/100: .2f} y location: {(SIZE[1] - pos_y)/100: .2f}'
+
+                text_box.update()
+                text_box.draw(SCREEN)
                 # Update the SCREEN
                 pygame.display.update()
 

@@ -1,0 +1,25 @@
+<a target="_blank" href="https://icons8.com/icon/24648/catapult">Catapult</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+<a target="_blank" href="https://icons8.com/icon/DT0jMS3xKcbV/ball">Ball</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+
+
+max y vel 1135
+max x vel 
+
+
+if input_angle > 0 and input_angle < 90:
+        launch_angle = input_angle
+
+    else:
+        print('angle wrong')
+        launch_angle = 0
+
+    if input_vel_y > 0 and input_vel_y < math.sqrt((2*abs(GRAVITATIONAL_ACCELERATION)*SIZE[1])/math.sin(math.radians(input_angle))**2):
+        launch_vel_y = input_vel_y 
+
+    else:
+        print('y vel wrong')
+        launch_vel_y = 0
+
+    if input_vel_x > 0 and input_vel_x < (math.sqrt(abs(GRAVITATIONAL_ACCELERATION)/(8*SIZE[1]))*(SIZE[0]/math.cos(math.radians(input_angle)))):
+        launch_vel_x = input_vel_x
